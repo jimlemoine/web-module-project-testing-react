@@ -29,10 +29,11 @@ test("renders without error", () => {
 
 test("renders the summary text passed as prop", ()=>{
     render(<Episode episode={testEpisode} />)
-    const summaryText = screen.queryByText("This episode is about unique stuff");
+    const summaryText = screen.queryByText(/This episode is about unique stuff/i);
     expect(summaryText).toBeInTheDocument();
     expect(summaryText).toBeTruthy();
     expect(summaryText).not.toBeUndefined();
+    expect(summaryText).toHaveTextContent("This episode is about unique stuff")
 });
 
 test("renders default image when image is not defined", ()=>{

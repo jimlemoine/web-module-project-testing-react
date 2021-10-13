@@ -4,10 +4,9 @@ import userEvent from '@testing-library/user-event';
 
 import Show from './../Show';
 import Episode from '../Episode';
-import { renderIntoDocument } from 'react-dom/test-utils';
 
 const testShow = {
-    //add in approprate test data structure here.
+    //add in appropriate test data structure here.
     name: "test show name",
     summary: 'test show summary',
     seasons: [
@@ -44,19 +43,24 @@ test('renders same number of options seasons are passed in', ()=>{
     render(<Show show={testShow} selectedSeason={"none"} />);
     let seasons = screen.queryAllByTestId("season-option");
     expect(seasons.length).toBe(4);
+    expect(seasons).toHaveLength(4);
 });
 
 test('handleSelect is called when an season is selected', () => {
-    render(<Show show={testShow} selectedSeason={"none"} />);
-    userEvent.selectOptions(screen.queryByLabelText("Select A Season"), "season 1");
-    expect(screen.getByRole('option', {name: "season 1"}).selected).toBe(true);
+    const handleSelect = jest.fn()
+    render(<Show show={testShow} selectedSeason={"none"} handleSelect={handleSelect}/>);
+    const select = screen.getByLabelText(/Select A Season/i);
+    userEvent.selectOptions(select, ['1']);
+    expect(handleSelect).toBeCalled();
 });
 
 test('component renders when no seasons are selected and when rerenders with a season passed in', () => {
     const { rerender } = render(<Show show={testShow} selectedSeason={"none"} />);
-    expect(<Episode />).not.toBeInTheDocument();
-    rerender(<Show show={testShow} selectedSeason={"season 1"} />);
-    expect(<Episode />).toBeInTheDocument();
+    let episodes = screen.queryByTestId('episodes-container');
+    expect(episodes).not.toBeInTheDocument();
+    rerender(<Show show={testShow} selectedSeason={1} />);
+    episodes = screen.queryByTestId('episodes-container');
+    expect(episodes).toBeInTheDocument();
 });
 
 //Tasks:
